@@ -21,9 +21,14 @@ class EventFactory extends Factory
      */
     public function definition()
     {
+        // dd($this->faker->dateTimeThisYear());
+        $start = $this->faker->dateTimeThisYear();
+
+        $end = $start->modify('+1 day');
         return [
-            'title' => $this->faker->jobTitle(),
-            'starts_at' => $this->faker->dateTimeThisYear()
+            'title'     => $this->faker->jobTitle(),
+            'starts_at' => $start,
+            'ends_at'   => $end,
         ];
     }
 }
