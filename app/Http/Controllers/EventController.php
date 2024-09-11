@@ -14,26 +14,30 @@ class EventController extends Controller
     {
         Request::validate([
             'starts_at' => ['nullable', 'date:Y-m-d'],
-            'ends_at' => ['nullable', 'date:Y-m-d'],
+            'ends_at'   => ['nullable', 'date:Y-m-d'],
         ]);
 
         return Inertia::render('Events/Index', [
             'starts_at' => Request::get('starts_at'),
-            'ends_at' => Request::get('ends_at'),
-            'events' => Event::isBetween(Request::get('starts_at'), Request::get('ends_at'))->orderByDate()->get()
+            'ends_at'   => Request::get('ends_at'),
+            'events'    => Event::isBetween(Request::get('starts_at'), Request::get('ends_at'))->orderByDate()->get()
         ]);
     }
 
     public function store()
     {
         $data = Request::validate([
-            'title' => ['required', 'max:255'],
-            'starts_at' => ['required', 'date:Y-m-d H:i']
+            'title'     => ['required', 'max:255'],
+            'starts_at' => ['required', 'date:Y-m-d H:i'],
+            'ends_at'   => ['required', 'date:Y-m-d H:i']
+
         ]);
 
         Event::create([
             ...$data,
-            'starts_at' => Carbon::createFromFormat('Y-m-d H:i', $data['starts_at'])
+            'starts_at' => Carbon::createFromFormat('Y-m-d H:i', $data['starts_at']),
+            'ends_at'   => Carbon::createFromFormat('Y-m-d H:i', $data['ends_at'])
+
         ]);
 
         return Redirect::back();
@@ -42,7 +46,7 @@ class EventController extends Controller
     public function update(Event $event)
     {
         $data = Request::validate([
-            'title' => ['required', 'max:255'],
+            'title'     => ['required', 'max:255'],
             'starts_at' => ['required', 'date:Y-m-d H:i']
         ]);
 

@@ -14,6 +14,15 @@ class Event extends Model
     /**
      * Gets the user the event belongs to.
      */
+
+    protected $fillable = [
+        'title',
+        'starts_at',
+        'ends_at',
+    ];
+
+    public $timestamps = true;
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
