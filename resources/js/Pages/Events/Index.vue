@@ -81,7 +81,8 @@ const onDelete = () => {
                     </template>
                 </Dialog>
             </div>
-            <Table :data="events" :headings="['Title', 'Date', 'Actions']">
+
+            <Table :data="events" :headings="['Title', 'Début', 'Fin', 'Actions']">
                 <template #row="{ item }">
                     <td>{{ item.title }}</td>
                     <td>
