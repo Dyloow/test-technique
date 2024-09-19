@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref, computed,onMounted,watch } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import moment from "moment";
 import AppLayout from "@/Layouts/AppLayout";
@@ -7,6 +7,7 @@ import AddEditDialog from "./Partials/AddEditDialog";
 import Button from "@/Components/Common/Button";
 import Dialog from "@/Components/Common/DialogModal";
 import Table from "@/Components/Common/Table";
+import DateRangePicker from "@/Components/Common/DateTimePickers/DateRangePicker";
 
 const format = "YYYY-MM-DD";
 
@@ -42,6 +43,30 @@ const onDelete = () => {
         },
     });
 };
+
+// Filtrer les événements en fonction des dates
+const filteredEvents = computed(() => {
+    return props.events.filter(event => {
+        const startDate = dateFilters.value[0];
+        const endDate = dateFilters.value[1];
+        const eventStart = moment(event.starts_at);
+        const eventEnd = moment(event.ends_at);
+        return (
+            (!startDate || eventStart.isSameOrAfter(startDate, 'day')) &&
+            (!endDate || eventEnd.isSameOrBefore(endDate, 'day'))
+        );
+    });
+});
+
+const sortedEvents = ref(filteredEvents.value);
+
+watch(dateFilters, () => {
+    sortedEvents.value = filteredEvents.value;
+}, { immediate: true });
+
+watch(filteredEvents, () => {
+    sortedEvents.value = filteredEvents.value;
+});
 </script>
 
 <template>
@@ -51,6 +76,10 @@ const onDelete = () => {
                 Events
             </h2>
         </template>
+
+        <div class="mb-4">
+            <DateRangePicker v-model="dateFilters" />
+        </div>
 
         <div class="card">
             <div class="mb-3">
@@ -82,7 +111,7 @@ const onDelete = () => {
                 </Dialog>
             </div>
 
-            <Table :data="events" :headings="['Title', 'Début', 'Fin', 'Actions']">
+            <Table :data="sortedEvents" :headings="['Title', 'Début', 'Fin', 'Actions']">
                 <template #row="{ item }">
                     <td>{{ item.title }}</td>
                     <td>

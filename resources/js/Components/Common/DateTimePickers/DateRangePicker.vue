@@ -65,29 +65,23 @@ const onBlur = (event) => {
     </label>
     <button class="date-button rounded-l-md" @click="showStartDatePopup = true" @blur="onBlur">
       <div>
-        {{modelValue?.[0]?.format(format)}}
-        <Calendar
-          :show="showStartDatePopup"
-          :value="modelValue?.[0]"
-          :with-time="false"
-          @change="onStartDateChange"
-        />
+        {{
+          modelValue[0]
+            ? modelValue[0].format(format)
+            : "Select Start Date"
+        }}
+        <Calendar :show="showStartDatePopup" :value="modelValue[0]" :with-time="false"
+          @update:value="onStartDateChange" />
       </div>
     </button>
-    <button
-      ref="endDatePicker"
-      class="date-button rounded-r-md"
-      @click="showEndDatePopup = true"
-      @blur="onBlur"
-    >
+    <button ref="endDatePicker" class="date-button rounded-r-md" @click="showEndDatePopup = true" @blur="onBlur">
       <div>
-        {{modelValue?.[1]?.format(format)}}
-        <Calendar
-          :show="showEndDatePopup"
-          :value="modelValue?.[1]"
-          :with-time="false"
-          @change="onEndDateChange"
-        />
+        {{
+          modelValue[1]
+            ? modelValue[1].format(format)
+            : "Select End Date"
+        }}
+        <Calendar :show="showEndDatePopup" :value="modelValue[1]" :with-time="false" @update:value="onEndDateChange" />
       </div>
     </button>
   </div>
