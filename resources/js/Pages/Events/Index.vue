@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed,onMounted,watch } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import moment from "moment";
 import AppLayout from "@/Layouts/AppLayout";
@@ -44,29 +44,18 @@ const onDelete = () => {
     });
 };
 
-// Filtrer les événements en fonction des dates
-const filteredEvents = computed(() => {
-    return props.events.filter(event => {
-        const startDate = dateFilters.value[0];
-        const endDate = dateFilters.value[1];
-        const eventStart = moment(event.starts_at);
-        const eventEnd = moment(event.ends_at);
-        return (
-            (!startDate || eventStart.isSameOrAfter(startDate, 'day')) &&
-            (!endDate || eventEnd.isSameOrBefore(endDate, 'day'))
-        );
+const fetchFilteredEvents = () => {
+    const [startDate, endDate] = dateFilters.value;
+    Inertia.get(route("events.index"), {
+        starts_at: startDate ? startDate.format(format) : null,
+        ends_at: endDate ? endDate.format(format) : null,
+    }, {
+        preserveState: true,
+        preserveScroll: true,
     });
-});
+};
 
-const sortedEvents = ref(filteredEvents.value);
-
-watch(dateFilters, () => {
-    sortedEvents.value = filteredEvents.value;
-}, { immediate: true });
-
-watch(filteredEvents, () => {
-    sortedEvents.value = filteredEvents.value;
-});
+watch(dateFilters, fetchFilteredEvents, { immediate: true });
 </script>
 
 <template>
@@ -111,7 +100,7 @@ watch(filteredEvents, () => {
                 </Dialog>
             </div>
 
-            <Table :data="sortedEvents" :headings="['Title', 'Début', 'Fin', 'Actions']">
+            <Table :data="props.events" :headings="['Title', 'Début', 'Fin', 'Actions']">
                 <template #row="{ item }">
                     <td>{{ item.title }}</td>
                     <td>

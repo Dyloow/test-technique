@@ -48,12 +48,12 @@ class EventController extends Controller
         $data = Request::validate([
             'title'     => ['required', 'max:255'],
             'starts_at' => ['required', 'date:Y-m-d H:i'],
-            'ends_at' => ['required', 'date:Y-m-d H:i'],
+            'ends_at'   => ['required', 'date:Y-m-d H:i'],
         ]);
         $event->update([
             ...$data,
             'starts_at' => Carbon::createFromFormat('Y-m-d H:i', $data['starts_at']),
-            'ends_at' => Carbon::createFromFormat('Y-m-d H:i', $data['ends_at']),
+            'ends_at'   => Carbon::createFromFormat('Y-m-d H:i', $data['ends_at']),
 
         ]);
 

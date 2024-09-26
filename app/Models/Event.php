@@ -42,7 +42,7 @@ class Event extends Model
             $query->where('events.starts_at', '>', $startsAt);
         }
         if ($endsAt) {
-            $query->where('events.starts_at', '<', $endsAt);
+            $query->where('events.ends_at', '<', $endsAt);
         }
         return $query;
     }
